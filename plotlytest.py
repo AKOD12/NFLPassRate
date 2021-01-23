@@ -7,24 +7,44 @@ import dash
 import dash_core_components as dcc
 import dash_html_components as dhc
 from dash.dependencies import Input, Output
+import time
+from django_plotly_dash import DjangoDash
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-df=pd.read_csv('pbp_2020_labels.csv')
+COLORS = {'ARI':'#97233F','ATL':'#A71930','BAL':'#241773','BUF':'#00338D','CAR':'#0085CA','CHI':'#00143F',
+          'CIN':'#FB4F14','CLE':'#FB4F14','DAL':'#B0B7BC','DEN':'#002244','DET':'#046EB4','GB':'#24423C',
+          'HOU':'#C9243F','IND':'#003D79','JAX':'#136677','KC':'#CA2430','LA':'#002147','LAC':'#2072BA',
+          'LV':'#C4C9CC','MIA':'#0091A0','MIN':'#4F2E84','NE':'#0A2342','NO':'#A08A58','NYG':'#192E6C',
+          'NYJ':'#203731','PHI':'#014A53','PIT':'#FFC20E','SEA':'#7AC142','SF':'#C9243F','TB':'#D40909',
+          'TEN':'#4095D1','WAS':'#FFC20F'}
 
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
 app.layout = dhc.Div([
    dcc.Graph(id='pass-rate'),
-   dhc.Label('Select Season(s):'),
-    dcc.RangeSlider(
+   dhc.Label('Select Season:'),
+    dcc.Dropdown(
         id='szn',
-        min=2006,
-        max=2020,
-        step=1,
-        marks={i: '{}'.format(i) if i == 2006 else str(i) for i in range(2006,2021)},
-        value=[2020,2020]
+        options=[
+            {'label': '2020', 'value': 2020},
+            {'label': '2019', 'value': 2019},
+            {'label': '2018', 'value': 2018},
+            {'label': '2017', 'value': 2017},
+            {'label': '2016', 'value': 2016},
+            {'label': '2015', 'value': 2015},
+            {'label': '2014', 'value': 2014},
+            {'label': '2013', 'value': 2013},
+            {'label': '2012', 'value': 2012},
+            {'label': '2011', 'value': 2011},
+            {'label': '2010', 'value': 2010},
+            {'label': '2009', 'value': 2009},
+            {'label': '2008', 'value': 2008},
+            {'label': '2007', 'value': 2007},
+            {'label': '2006', 'value': 2006}
+            ],
+        value=2020
     ),
    dhc.Label('Select Down:'),
     dcc.Dropdown(
@@ -89,19 +109,24 @@ app.layout = dhc.Div([
     Input('slct-down', 'value'),
     Input('time-remain', 'value'),
     Input('dtg', 'value'),
-    Input('win-prob', 'value')
+    Input('win-prob', 'value'),
+    Input('szn', 'value')
 )
 
-def update_graph(dn, time_left, dist, win):
+def update_graph(dn, time_left, dist, win, season):
+    df = pd.read_csv('https://github.com/guga31bb/nflfastR-data/blob/master/data/' \
+                         'play_by_play_' + str(season) + '.csv.gz?raw=True',
+                         compression='gzip', low_memory=False)
+
     pass_data=df.loc[(df.down<(int(dn))+1) & (df.half_seconds_remaining>time_left) &
         (df.wp>=(win/100)) & (df.wp<=(1-(win/100))) & (df.ydstogo==dist)]
     rate=pass_data.groupby('posteam')[['pass']].mean()
     rate.sort_values('pass',ascending=False,inplace=True)
 
-    fig=px.bar(pass_data, x=np.arange(1,33), y=rate['pass'],
-    title=f'Pass Rate by Team on Down #{dn} with {dist} yards to go Excluding the Final {int(time_left/60)} Minutes of Halves'
+    fig=px.bar(pass_data, x=rate.index, y=rate['pass']*100,
+    labels={'x': 'Team', 'y': 'Pass Rate (%)'},
+    title=f'Pass Rate by Team on Down #{dn} with {dist} yards to go Excluding the Final {int(time_left/60)} Minutes of Halves when the Win Probability is between {win}% and {100-win}%'
     )
-    
     return fig
 
 
