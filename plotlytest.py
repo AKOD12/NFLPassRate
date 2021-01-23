@@ -21,6 +21,7 @@ COLORS = {'ARI':'#97233F','ATL':'#A71930','BAL':'#241773','BUF':'#00338D','CAR':
 
 
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+server=app.server
 
 app.layout = dhc.Div([
    dcc.Graph(id='pass-rate'),
