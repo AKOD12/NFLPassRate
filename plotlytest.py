@@ -12,7 +12,7 @@ from django_plotly_dash import DjangoDash
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-COLORS = {'ARI':'#97233F','ATL':'#A71930','BAL':'#241773','BUF':'#00338D','CAR':'#0085CA','CHI':'#00143F',
+nfl_color_codes = {'ARI':'#97233F','ATL':'#A71930','BAL':'#241773','BUF':'#00338D','CAR':'#0085CA','CHI':'#00143F',
           'CIN':'#FB4F14','CLE':'#FB4F14','DAL':'#B0B7BC','DEN':'#002244','DET':'#046EB4','GB':'#24423C',
           'HOU':'#C9243F','IND':'#003D79','JAX':'#136677','KC':'#CA2430','LA':'#002147','LAC':'#2072BA',
           'LV':'#C4C9CC','MIA':'#0091A0','MIN':'#4F2E84','NE':'#0A2342','NO':'#A08A58','NYG':'#192E6C',
@@ -126,6 +126,8 @@ def update_graph(dn, time_left, dist, win, season):
 
     fig=px.bar(pass_data, x=rate.index, y=rate['pass']*100,
     labels={'x': 'Team', 'y': 'Pass Rate (%)'},
+    color=nfl_color_codes,
+    color_discrete_sequence=nfl_color_codes,
     title={'text':f'Pass Rate by Team on Down #{dn} with {dist} yards to go Excluding the Final {int(time_left/60)} Minutes of Halves when the Win Probability is between {win}% and {100-win}%',
         'font_size': 20 }
     )
