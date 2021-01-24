@@ -126,7 +126,8 @@ def update_graph(dn, time_left, dist, win, season):
 
     fig=px.bar(pass_data, x=rate.index, y=rate['pass']*100,
     labels={'x': 'Team', 'y': 'Pass Rate (%)'},
-    title=f'Pass Rate by Team on Down #{dn} with {dist} yards to go Excluding the Final {int(time_left/60)} Minutes of Halves when the Win Probability is between {win}% and {100-win}%'
+    title={'text':f'Pass Rate by Team on Down #{dn} with {dist} yards to go Excluding the Final {int(time_left/60)} Minutes of Halves when the Win Probability is between {win}% and {100-win}%',
+        'font_size': 20 }
     )
     return fig
 
