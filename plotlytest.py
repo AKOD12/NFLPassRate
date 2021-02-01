@@ -8,7 +8,6 @@ import dash_core_components as dcc
 import dash_html_components as dhc
 from dash.dependencies import Input, Output
 import time
-from django_plotly_dash import DjangoDash
 import dash_bootstrap_components as dbc  
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
