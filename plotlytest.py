@@ -20,7 +20,7 @@ nfl_color_codes = {'ARI':'#97233F','ATL':'#A71930','BAL':'#241773','BUF':'#00338
           'TEN':'#4095D1','WAS':'#FFC20F'}
 
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(title="NFL Situational Pass Rate", external_stylesheets=external_stylesheets)
 server=app.server
 
 app.layout = dhc.Div(
@@ -128,7 +128,8 @@ def update_graph(dn, time_left, dist, win, season):
     labels={'x': 'Team', 'y': 'Pass Rate (%)'},
     title=f'Pass Rate by Team on Down #{dn} with {dist} yards to go Excluding the Final {int(time_left/60)} Minutes of Halves when the Win Probability is between {win}% and {100-win}%'
     )
-    fig.add_hline(y=rate['pass'].mean()*100)
+    fig.add_hline(y=rate['pass'].mean()*100, annotation_text="NFL Average")
+    fig.add_annotation(x=20, y=60, text="Figure and Site by Ankith Kodali      Data: @nflfastR")
     return fig
 
 
