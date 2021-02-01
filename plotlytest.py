@@ -9,6 +9,7 @@ import dash_html_components as dhc
 from dash.dependencies import Input, Output
 import time
 from django_plotly_dash import DjangoDash
+import dash_bootstrap_components as dbc  
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -23,8 +24,8 @@ nfl_color_codes = {'ARI':'#97233F','ATL':'#A71930','BAL':'#241773','BUF':'#00338
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server=app.server
 
-app.layout = dhc.Div([
-   dcc.Graph(id='pass-rate'),
+app.layout = dhc.Div(
+   children=[dbc.Spinner(children=[dcc.Graph(id='loading-output')], type='grow'),
    dhc.Label('Select Season:'),
     dcc.Dropdown(
         id='szn',
@@ -106,7 +107,7 @@ app.layout = dhc.Div([
     ],)
 
 @app.callback(
-    Output('pass-rate', 'figure'),
+    Output("loading-output", "figure"),
     Input('slct-down', 'value'),
     Input('time-remain', 'value'),
     Input('dtg', 'value'),
