@@ -126,7 +126,9 @@ def update_graph(dn, time_left, dist, win, season):
 
     fig=px.bar(pass_data, x=rate.index, y=rate['pass']*100,
     labels={'x': 'Team', 'y': 'Pass Rate (%)'},
-    title=f'Pass Rate by Team on Down #{dn} with {dist} yards to go Excluding the Final {int(time_left/60)} Minutes of Halves when the Win Probability is between {win}% and {100-win}%'
+    title=f'Pass Rate by Team on Down #{dn} with {dist} yards to go Excluding the Final {int(time_left/60)} Minutes of Halves when the Win Probability is between {win}% and {100-win}%',
+    color=rate.index,
+    color_discrete_map=nfl_color_codes
     )
     fig.add_hline(y=rate['pass'].mean()*100, annotation_text="NFL Average")
     fig.add_annotation(x=20, y=60, text="Figure and Site by Ankith Kodali      Data: @nflfastR")
