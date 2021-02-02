@@ -130,6 +130,7 @@ def update_graph(dn, time_left, dist, win, season):
     color=rate.index,
     color_discrete_map=nfl_color_codes
     )
+    fig.update_traces(showlegend=False)
     fig.add_hline(y=rate['pass'].mean()*100, annotation_text="NFL Average")
     fig.add_annotation(x=20, y=60, text="Figure and Site by Ankith Kodali      Data: @nflfastR")
     return fig
