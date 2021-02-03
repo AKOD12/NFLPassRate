@@ -119,7 +119,7 @@ def update_graph(dn, time_left, dist, win, season):
                          'play_by_play_' + str(season) + '.csv.gz?raw=True',
                          compression='gzip', low_memory=False)
 
-    pass_data=df.loc[(df.down<(int(dn))+1) & (df.half_seconds_remaining>time_left) &
+    pass_data=df.loc[(df.down==(int(dn))) & (df.half_seconds_remaining>time_left) &
         (df.wp>=(win/100)) & (df.wp<=(1-(win/100))) & (df.ydstogo==dist)]
     rate=pass_data.groupby('posteam')[['pass']].mean()
     rate.sort_values('pass',ascending=False,inplace=True)
