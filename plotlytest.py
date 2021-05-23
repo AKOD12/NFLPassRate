@@ -24,7 +24,7 @@ app = dash.Dash(title="NFL Situational Pass Rate", external_stylesheets=external
 server=app.server
 
 app.layout = dhc.Div(
-   children=[dbc.Spinner(children=[dcc.Graph(id='loading-output')], type='grow'),
+   [dbc.Spinner(dcc.Graph(id='loading-output'), color='primary', type="grow"),
    dhc.Label('Select Season:'),
     dcc.Dropdown(
         id='szn',
@@ -119,24 +119,23 @@ def update_graph(dn, time_left, dist, win, season):
                          'play_by_play_' + str(season) + '.csv.gz?raw=True',
                          compression='gzip', low_memory=False)
 
+    #df = df[['down', 'half_seconds_remaining', 'wp', 'ydstogo', 'posteam', 'pass']]
+
     pass_data=df.loc[(df.down==(int(dn))) & (df.half_seconds_remaining>time_left) &
         (df.wp>=(win/100)) & (df.wp<=(1-(win/100))) & (df.ydstogo==dist)]
     rate=pass_data.groupby('posteam')[['pass']].mean()
     rate.sort_values('pass',ascending=False,inplace=True)
 
     fig=px.bar(pass_data, x=rate.index, y=rate['pass']*100,
-    labels={'x': 'Team', 'y': 'Pass Rate (%)'},
-    title=f'Pass Rate by Team on Down #{dn} with {dist} yards to go Excluding the Final {int(time_left/60)} Minutes of Halves when the Win Probability is between {win}% and {100-win}%',
+    labels={'x': 'Team\nFigure and Site by Ankith Kodali       Data: @nflfastR', 'y': 'Pass Rate (%)'},
+    title=f'Pass Rate by Team on Down #{dn} with {dist} yards to go Excluding the Final {int(time_left/60)} Minutes of Halves with Win Probability between {win}% and {100-win}%',
     color=rate.index,
     color_discrete_map=nfl_color_codes
     )
     fig.update_traces(showlegend=False)
     fig.add_hline(y=rate['pass'].mean()*100, annotation_text="NFL Average")
-    fig.add_annotation(x=20, y=60, text="Figure and Site by Ankith Kodali      Data: @nflfastR")
     return fig
 
 
 if __name__ == '__main__':
     app.run_server(debug=True)
-
-
