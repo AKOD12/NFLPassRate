@@ -23,9 +23,9 @@ nfl_color_codes = {'ARI':'#97233F','ATL':'#A71930','BAL':'#241773','BUF':'#00338
 app = dash.Dash(title="NFL Situational Pass Rate", external_stylesheets=external_stylesheets)
 server=app.server
 
-app.layout = dhc.Div(
-   [dbc.Spinner(dcc.Graph(id='loading-output'), color='primary', type="grow"),
-   dhc.Label('Select Season:'),
+app.layout = dhc.Div([
+    dbc.Spinner(dcc.Graph(id='loading-output'), color='primary', type="grow"),
+    dhc.Label('Select Season:'),
     dcc.Dropdown(
         id='szn',
         options=[
@@ -127,13 +127,13 @@ def update_graph(dn, time_left, dist, win, season):
     rate.sort_values('pass',ascending=False,inplace=True)
 
     fig=px.bar(pass_data, x=rate.index, y=rate['pass']*100,
-    labels={'x': 'Team\nFigure and Site by Ankith Kodali       Data: @nflfastR', 'y': 'Pass Rate (%)'},
+    labels={'x': 'Team', 'y': 'Pass Rate (%)'},
     title=f'Pass Rate by Team on Down #{dn} with {dist} yards to go Excluding the Final {int(time_left/60)} Minutes of Halves with Win Probability between {win}% and {100-win}%',
     color=rate.index,
     color_discrete_map=nfl_color_codes
     )
     fig.update_traces(showlegend=False)
-    fig.add_hline(y=rate['pass'].mean()*100, annotation_text="NFL Average")
+    fig.add_hline(y=rate['pass'].mean()*100, annotation_text="NFL Average (Data from @nflfastR & Site by Ankith Kodali)")
     return fig
 
 
